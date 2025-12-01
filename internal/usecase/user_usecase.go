@@ -26,6 +26,14 @@ func (u *UserUsecase) GetUserById(id int) (*domain.User, error) {
 	return u.repo.GetById(id)
 }
 
+func (u *UserUsecase) GetByAuth0Sub(sub string) (*domain.User, error) {
+	user, err := u.repo.GetByAuth0Sub(sub)
+	if user == nil || err != nil {
+		return nil, errors.New("user not found")
+	}
+	return u.repo.GetByAuth0Sub(sub)
+}
+
 func (u *UserUsecase) CreateUser(user *domain.User) (*domain.User, error) {
 	if user.Name == "" {
 		return nil, errors.New("userName is required")

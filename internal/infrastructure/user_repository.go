@@ -46,6 +46,14 @@ func (r *UserRepository) GetPublicUsers() ([]domain.PublicUser, error) {
 	return publicUsers, nil
 }
 
+func (r *UserRepository) GetByAuth0Sub(sub string) (*domain.User, error) {
+	var user domain.User
+	if err := r.db.Where("auth0_sub = ?", sub).First(&user).Error; err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
 func (r *UserRepository) CreateNewUser(user *domain.User) (*domain.User, error) {
 	if err := r.db.Create(user).Error; err != nil {
 		return nil, err
