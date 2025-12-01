@@ -30,6 +30,22 @@ func (r *UserRepository) GetById(id int) (*domain.User, error) {
 	return &user, nil
 }
 
+func (r *UserRepository) GetPublicUsers() ([]domain.PublicUser, error) {
+	var users []domain.User
+	if err := r.db.Find(&users).Error; err != nil {
+		return nil, err
+	}
+
+	var publicUsers []domain.PublicUser
+	for _, user := range users {
+		publicUsers = append(publicUsers, domain.PublicUser{
+			ID:   uint(user.Id),
+			Name: user.Name,
+		})
+	}
+	return publicUsers, nil
+}
+
 func (r *UserRepository) CreateNewUser(user *domain.User) (*domain.User, error) {
 	if err := r.db.Create(user).Error; err != nil {
 		return nil, err

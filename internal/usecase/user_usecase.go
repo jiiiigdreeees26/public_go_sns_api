@@ -14,8 +14,8 @@ func NewUserUsecase(r *infrastructure.UserRepository) *UserUsecase {
 	return &UserUsecase{repo: r}
 }
 
-func (u *UserUsecase) GetAllUsers() ([]domain.User, error) {
-	return u.repo.GetAll()
+func (u *UserUsecase) GetPublicUsers() ([]domain.PublicUser, error) {
+	return u.repo.GetPublicUsers()
 }
 
 func (u *UserUsecase) GetUserById(id int) (*domain.User, error) {
