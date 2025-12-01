@@ -17,8 +17,8 @@ func NewUserHandler(u *usecase.UserUsecase) *UserHandler {
 	return &UserHandler{usecase: u}
 }
 
-func (h *UserHandler) GetUsers(c *gin.Context) {
-	users, err := h.usecase.GetAllUsers()
+func (h *UserHandler) GetPublicUsers(c *gin.Context) {
+	users, err := h.usecase.GetPublicUsers()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -41,6 +41,21 @@ func (h *UserHandler) GetUserById(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, user)
+}
+
+func (h *UserHandler) GetByAuth0Sub(c *gin.Context) {
+	var user domain.User
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	targetUser, err := h.usecase.GetByAuth0Sub(user.Auth0Sub)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, targetUser)
 }
 
 func (h *UserHandler) CreateUser(c *gin.Context) {

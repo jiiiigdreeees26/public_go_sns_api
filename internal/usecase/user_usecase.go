@@ -14,8 +14,8 @@ func NewUserUsecase(r *infrastructure.UserRepository) *UserUsecase {
 	return &UserUsecase{repo: r}
 }
 
-func (u *UserUsecase) GetAllUsers() ([]domain.User, error) {
-	return u.repo.GetAll()
+func (u *UserUsecase) GetPublicUsers() ([]domain.PublicUser, error) {
+	return u.repo.GetPublicUsers()
 }
 
 func (u *UserUsecase) GetUserById(id int) (*domain.User, error) {
@@ -24,6 +24,14 @@ func (u *UserUsecase) GetUserById(id int) (*domain.User, error) {
 		return nil, errors.New("user not found")
 	}
 	return u.repo.GetById(id)
+}
+
+func (u *UserUsecase) GetByAuth0Sub(sub string) (*domain.User, error) {
+	user, err := u.repo.GetByAuth0Sub(sub)
+	if user == nil || err != nil {
+		return nil, errors.New("user not found")
+	}
+	return u.repo.GetByAuth0Sub(sub)
 }
 
 func (u *UserUsecase) CreateUser(user *domain.User) (*domain.User, error) {

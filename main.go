@@ -56,7 +56,7 @@ func main() {
 	auth_users := r.Group("/backend/users")
 	auth_users.Use(middleware.AuthMiddleware())
 	{
-		users.GET("", userHandler.GetUsers)
+		users.GET("", userHandler.GetPublicUsers)
 		users.GET("/:id", userHandler.GetUserById)
 		auth_users.POST("", userHandler.CreateUser)
 		auth_users.PUT("/:id", userHandler.UpdateUserName)
