@@ -44,15 +44,15 @@ func (h *UserHandler) GetUserById(c *gin.Context) {
 }
 
 func (h *UserHandler) GetByAuth0Sub(c *gin.Context) {
-	var user domain.User
-	if err := c.ShouldBindJSON(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	auth0Sub, exists := c.Get("auth0_sub")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User context not found"})
 		return
 	}
-
-	targetUser, err := h.usecase.GetByAuth0Sub(user.Auth0Sub)
+	subStr := auth0Sub.(string)
+	targetUser, err := h.usecase.GetByAuth0Sub(subStr)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, targetUser)

@@ -27,9 +27,9 @@ func (u *UserUsecase) GetUserById(id int) (*domain.User, error) {
 }
 
 func (u *UserUsecase) GetByAuth0Sub(sub string) (*domain.User, error) {
-	user, err := u.repo.GetByAuth0Sub(sub)
-	if user == nil || err != nil {
-		return nil, errors.New("user not found")
+	_, err := u.repo.GetByAuth0Sub(sub)
+	if err != nil {
+		return nil, errors.New("Error")
 	}
 	return u.repo.GetByAuth0Sub(sub)
 }
