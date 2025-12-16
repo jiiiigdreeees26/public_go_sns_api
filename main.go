@@ -60,6 +60,13 @@ func main() {
 		auth_users.POST("", userHandler.CreateUser)
 		auth_users.PUT("/:id", userHandler.UpdateUserName)
 	}
+	// ログインユーザー情報のエンドポイント
+	userinfo := r.Group("/backend/userinfo")
+	userinfo.Use(middleware.AuthMiddleware())
+	{
+		userinfo.GET("", userHandler.GetByAuth0Sub)
+	}
+
 	// 投稿関連のエンドポイント
 	posts := r.Group("/backend/posts")
 	auth_posts := r.Group("/backend/posts")

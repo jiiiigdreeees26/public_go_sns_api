@@ -1,6 +1,8 @@
 package infrastructure
 
 import (
+	"errors"
+
 	"gorm.io/gorm"
 
 	"my-gin-app/internal/domain"
@@ -49,6 +51,9 @@ func (r *UserRepository) GetPublicUsers() ([]domain.PublicUser, error) {
 func (r *UserRepository) GetByAuth0Sub(sub string) (*domain.User, error) {
 	var user domain.User
 	if err := r.db.Where("auth0_sub = ?", sub).First(&user).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
 		return nil, err
 	}
 	return &user, nil

@@ -38,12 +38,16 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		// ユーザー情報をコンテキストに保存して下流に渡す
 		claims, ok := token.Claims.(jwt.MapClaims)
 		if ok {
-			c.Set("user", claims)
+			if sub, okSub := claims["sub"].(string); okSub {
+				// Ginのコンテキストに "auth0_sub" というキーで保存
+				c.Set("auth0_sub", sub)
+			} else {
+				c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "sub claim missing from token"})
+				return
+			}
 		}
-
 		c.Next()
 	}
 }
